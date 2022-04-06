@@ -1,0 +1,20 @@
+{
+  "name": "Ieee1609Dot2Dot1js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./Ieee1609.2.1.mjs",
+  "module": "./Ieee1609.2.1.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "asnjs": "fillabs/asnjs",
+    "Ieee1609Dot2js": "fillabs/Ieee1609Dot2js"
+  },
+  "author": "Denis Filatov",
+  "license": "MIT",
+  "exports": {
+    "default": "./Ieee1609.2.1.mjs",
+    "require": "./Ieee1609.2.1.cjs"
+  }
+}
