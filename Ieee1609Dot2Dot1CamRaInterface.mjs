@@ -18,24 +18,6 @@ WITH SUCCESSORS
 import { OctetString, SequenceOf, Sequence, Choice } from "asnjs"
 import {EccP256CurvePoint, HashedId8, IValue} from "Ieee1609Dot2js"
 /**
- * @class CamRaInterfacePDU
- *
- * @brief This is the parent structure for all structures exchanged between
- * the CAM and the RA during ACPC enrollment. An overview of this structure
- * is as follows:
- *
- * @property {RaCamBatchRequest} raCamBatchRequest contains the ACPC blinded key batch request sent
- * by the RA to the CAM.
- *
- * @property {CamRaBatchResponse} camRaBatchResponse contains the CAM's response to RaCamBatchRequest.
- */
-  export class CamRaInterfacePdu extends Choice ([
-    {name:"raCamBatchRequest"  , type:RaCamBatchRequest},
-    {name:"camRaBatchResponse" , type:CamRaBatchResponse},
-    {extension:true}
-  ]){}
-
-/**
  * @class RaCamBatchRequest
  *
  * @brief This structure contains parameters needed to request a blinded batch
@@ -55,6 +37,13 @@ import {EccP256CurvePoint, HashedId8, IValue} from "Ieee1609Dot2js"
     {name:"periodList"  ,type:SequenceOf(IValue)},
     {extension:true}
   ]){}
+
+/**
+ * @class BlindedKey
+ *
+ * @brief This is a blinded ACPC encryption key produced by the CAM.
+ */
+export class BlindedKey extends EccP256CurvePoint {}
 
 /**
  * @class CamRaBatchResponse
@@ -78,8 +67,20 @@ import {EccP256CurvePoint, HashedId8, IValue} from "Ieee1609Dot2js"
   ]){}
 
 /**
- * @class BlindedKey
+ * @class CamRaInterfacePDU
  *
- * @brief This is a blinded ACPC encryption key produced by the CAM.
+ * @brief This is the parent structure for all structures exchanged between
+ * the CAM and the RA during ACPC enrollment. An overview of this structure
+ * is as follows:
+ *
+ * @property {RaCamBatchRequest} raCamBatchRequest contains the ACPC blinded key batch request sent
+ * by the RA to the CAM.
+ *
+ * @property {CamRaBatchResponse} camRaBatchResponse contains the CAM's response to RaCamBatchRequest.
  */
-export class BlindedKey extends EccP256CurvePoint {}
+  export class CamRaInterfacePdu extends Choice ([
+    {name:"raCamBatchRequest"  , type:RaCamBatchRequest},
+    {name:"camRaBatchResponse" , type:CamRaBatchResponse},
+    {extension:true}
+  ]){}
+

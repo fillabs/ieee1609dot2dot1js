@@ -7,12 +7,11 @@
  * abbreviations used in this file are specified in 3.2.
  */
 
-import {HashedId8, IValue, Time32, CertificateType, PublicEncryptionKey} from "Ieee1609Dot2js"
-import {EeEcaCertRequestSpdu} from "./Ieee1609Dot2Dot1Protocol.mjs"
-import {AcpcTreeId} from "./Ieee1609Dot2Dot1Acpc.mjs"
-import { OctetString, Uint8, UTF8String } from "EtsiTs102941js/node_modules/Ieee1609Dot2Dot1js/node_modules/asnjs"
-import { ToBeSignedCertificate } from "EtsiTs102941js/node_modules/Ieee1609Dot2js"
+import { OctetString, Uint8, UTF8String, Null, Sequence, Choice } from "asnjs"
+import { HashedId8, IValue, Time32, CertificateType, PublicEncryptionKey, ToBeSignedCertificate} from "Ieee1609Dot2js"
 
+import { EcaEeInterfacePdu } from "./Ieee1609Dot2Dot1EcaEeInterface.mjs";
+import { AcpcTreeId} from "./Ieee1609Dot2Dot1Acpc.mjs"
 
 /**
  * @class RaEeCertInfo
@@ -38,7 +37,7 @@ import { ToBeSignedCertificate } from "EtsiTs102941js/node_modules/Ieee1609Dot2j
  * @property {} acpcTreeId contains the ACPC Tree Id if the certificates were
  * generated using ACPC as specified in 9.5. 
  */
- class RaEeCertInfo extends Sequence([
+ export class RaEeCertInfo extends Sequence([
   {name:"version",         type:Uint8},
   {name:"generationTime",  type:Time32},
   {name:"currentI",        type:IValue},
@@ -59,7 +58,7 @@ import { ToBeSignedCertificate } from "EtsiTs102941js/node_modules/Ieee1609Dot2j
  * @property {UTF8String} filename contains the name of the file requested for download,
  * formed as specified in 8.2.2.
  */
- class EeRaDownloadRequest extends Sequence([
+ export class EeRaDownloadRequest extends Sequence([
   {name:"generationTime",  type:Time32},
   {name:"filename",        type:UTF8String()},
   {extension:true}
@@ -274,7 +273,7 @@ class ButterflyParamsOriginal extends Sequence([
   {name:"raEeCertAck"                         ,type:RaEeCertAck},
   {name:"raEeCertInfo"                        ,type:RaEeCertInfo},
   {name:"eeRaDownloadRequest"                 ,type:EeRaDownloadRequest},
-  {name:"eeRaSuccessorEnrollmentCertRequest"  ,type:EeEcaCertRequestSpdu},
+  {name:"eeRaSuccessorEnrollmentCertRequest"  ,type:Null}, // to be updated to EeEcaCertRequestSpdu},
   {extension:true}
 ]){}
 

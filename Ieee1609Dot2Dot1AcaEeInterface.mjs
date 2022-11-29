@@ -1,5 +1,5 @@
-import { Uint8, OctetString, Choice, Sequence } from "asnjs"
-import {Certificate} from "Ieee1609Dot2js"
+import { Uint8, OctetString, Choice, Sequence, Null } from "asnjs"
+import { Time32, Ieee1609Dot2Certificate } from "Ieee1609Dot2js"
 
 /**
  * @class AcaEeCertResponse
@@ -39,10 +39,10 @@ import {Certificate} from "Ieee1609Dot2js"
  * <li> Absent otherwise.</li>
  * </ol>
  */ 
- class AcaEeCertResponse extends Sequence([
+ export class AcaEeCertResponse extends Sequence([
   {name:"version", type:Uint8},
   {name:"generationTime"  , type:Time32},
-  {name:"certificate"     , type:Certificate},
+  {name:"certificate"     , type:Ieee1609Dot2Certificate},
   {name:"privateKeyInfo"  , type:OctetString, optional:true},
   {extension:true}
 ]){}
@@ -66,4 +66,3 @@ import {Certificate} from "Ieee1609Dot2js"
     {name:"acaEeCertResponse", type:  AcaEeCertResponse},
     {extension:true}
   ]){}
-

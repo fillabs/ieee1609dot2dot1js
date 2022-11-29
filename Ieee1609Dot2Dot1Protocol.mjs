@@ -3,13 +3,12 @@
  */
 import {Uint8, Uint16, Choice, Sequence, OctetString, SequenceOf } from 'asnjs';
 import {HashAlgorithm, Ieee1609Dot2Data, Psid, Signature, SignerIdentifier} from 'Ieee1609Dot2js';
-import {EeRaInterfacePdu}  from './Ieee1609Dot2Dot1EeRaInterface.mjs'
 import {AcaEeInterfacePdu} from './Ieee1609Dot2Dot1AcaEeInterface.mjs'
 import {AcaLaInterfacePdu} from './Ieee1609Dot2Dot1AcaLaInterface.mjs'
 import {AcaMaInterfacePdu} from './Ieee1609Dot2Dot1AcaMaInterface.mjs'
-import {AcaRaInterfacePdu} from './Ieee1609Dot2Dot1AcaRaInterface.mjs'
+import {AcaRaInterfacePdu, AcaResponse } from './Ieee1609Dot2Dot1AcaRaInterface.mjs'
 import {AcpcTreeId}        from './Ieee1609Dot2Dot1Acpc.mjs'
-import {CertManagementPdu} from './Ieee1609Dot2Dot1CertManagement.mjs'
+import {CertManagementPdu, MultiSignedCtl, CompositeCrl, CertificateChain} from './Ieee1609Dot2Dot1CertManagement.mjs'
 import {EcaEeInterfacePdu} from './Ieee1609Dot2Dot1EcaEeInterface.mjs'
 import {EeMaInterfacePdu}  from './Ieee1609Dot2Dot1EeMaInterface.mjs'
 import {EeRaInterfacePdu}  from './Ieee1609Dot2Dot1EeRaInterface.mjs'
@@ -17,9 +16,11 @@ import {LaMaInterfacePdu}  from './Ieee1609Dot2Dot1LaMaInterface.mjs'
 import {LaRaInterfacePdu}  from './Ieee1609Dot2Dot1LaRaInterface.mjs'
 import {MaRaInterfacePdu}  from './Ieee1609Dot2Dot1MaRaInterface.mjs'
    
-import {Ieee1609Dot2Data_Unsecured, Ieee1609Dot2Data_Signed,
+import {
+        Ieee1609Dot2Data_Unsecured, Ieee1609Dot2Data_Signed,
         Ieee1609Dot2Data_Encrypted, Ieee1609Dot2Data_SignedEncrypted, Ieee1609Dot2Data_EncryptedSigned,
-        Ieee1609Dot2Data_SignedCertRequest }from './Ieee1609Dot2Extension.mjs'
+        Ieee1609Dot2Data_SignedCertRequest, Ieee1609Dot2Data_SignedEncryptedCertRequest
+       } from './Ieee1609Dot2Extension.mjs'
 
 /** @type {number} */
 export const SecurityMgmtPsid = 35;
@@ -63,9 +64,9 @@ export class AnyMbrPsid extends Psid {};
  */
  export class ScmsPduContent extends Choice([
     { name: "aca_ee", type: AcaEeInterfacePdu},
-    { name: "aca_la", type:  AcaLaInterfacePdu},
-    { name: "aca_ma", type:  AcaMaInterfacePdu},
-    { name: "aca_ra", type:  AcaRaInterfacePdu},
+    { name: "aca_la", type: AcaLaInterfacePdu},
+    { name: "aca_ma", type: AcaMaInterfacePdu},
+    { name: "aca_ra", type: AcaRaInterfacePdu},
     { name: "cert",   type: CertManagementPdu},
     { name: "eca_ee", type: EcaEeInterfacePdu},
     { name: "ee_ma",  type: EeMaInterfacePdu},
@@ -93,8 +94,6 @@ export class ScmsPdu extends Sequence([
     }
 ]){}
 
-export class ScmsPdu_Scoped extends ScmsPdu {}
-
 export class X509Certificate extends OctetString() {}
 
 export class X509SignerIdentifier extends Choice([
@@ -105,10 +104,10 @@ export class X509SignerIdentifier extends Choice([
 export class SignerSingleCert extends SignerIdentifier {}
 export class SignerSelf extends SignerIdentifier {}
 
-class ScmsPdu_RaAcaCertRequest extends ScmsPdu_Scoped {}
-class ScmsPdu_EeEcaCertRequest extends ScmsPdu_Scoped {}
-class ScmsPdu_EeRaCertRequest extends ScmsPdu_Scoped {}
-class ScmsPdu_EeRaSuccessorEnrollmentCertRequest extends ScmsPdu_Scoped {}
+class ScmsPdu_RaAcaCertRequest extends ScmsPdu {}
+class ScmsPdu_EeEcaCertRequest extends ScmsPdu {}
+class ScmsPdu_EeRaCertRequest extends ScmsPdu {}
+class ScmsPdu_EeRaSuccessorEnrollmentCertRequest extends ScmsPdu {}
 class ScopedCertificateRequest extends ScmsPdu {}
 
 class SignedCertificateRequest extends Sequence([
@@ -126,29 +125,39 @@ class SignedX509CertificateRequest extends Sequence ([
     }
 ]){}
 
-export class AcaEeCertResponsePlainSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu_Scoped ){}
-export class AcaEeCertResponsePrivateSpdu extends Ieee1609Dot2Data_EncryptedSigned( ScmsPdu_Scoped ){}
-export class AcaEeCertResponseCubkSpdu extends Ieee1609Dot2Data_Encrypted( ScmsPdu_Scoped ){}
-export class RaAcaCertRequestSpdu extends Ieee1609Dot2Data_SignedCertRequest ( ScmsPdu_Scoped ) {}
-export class AcaRaCertResponseSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu_Scoped ) {}
-export class CompositeCrlSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu_Scoped ){}
-export class CertificateChainSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu_Scoped ){}
-export class MultiSignedCtlSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu_Scoped ){}
-export class CtlSignatureSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu_Scoped ) {}
-export class CertificateManagementInformationStatusSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu_Scoped ) {}
-export class EeEcaCertRequestSpdu extends Ieee1609Dot2Data_SignedCertRequest ( ScmsPdu_Scoped ) {}
+export class AcaEeCertResponsePlainSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu ){}
+export class AcaEeCertResponsePrivateSpdu extends Ieee1609Dot2Data_EncryptedSigned( ScmsPdu ){}
+export class AcaEeCertResponseCubkSpdu extends Ieee1609Dot2Data_Encrypted( ScmsPdu ){}
+export class RaAcaCertRequestSpdu extends Ieee1609Dot2Data_SignedCertRequest ( ScmsPdu ) {}
+export class AcaRaCertResponseSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu ) {}
+export class CompositeCrlSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu ){}
+export class CertificateChainSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu ){}
+export class MultiSignedCtlSpdu extends Ieee1609Dot2Data_Unsecured( ScmsPdu ){}
+export class CtlSignatureSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu ) {}
+export class CertificateManagementInformationStatusSpdu extends Ieee1609Dot2Data_Signed( ScmsPdu ) {}
+export class EeEcaCertRequestSpdu extends Ieee1609Dot2Data_SignedCertRequest ( ScmsPdu ) {}
 export class EeRaCertRequestSpdu extends Ieee1609Dot2Data {}
-export class EeRa1609Dot2AuthenticatedCertRequestSpdu extends Ieee1609Dot2Data_SignedEncryptedCertRequest ( ScmsPdu_Scoped ){}
-export class EeRaX509AuthenticatedCertRequestSpdu extends Ieee1609Dot2Data_Encrypted (ScmsPdu_Scoped ){}
-export class RaEeCertAckSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu_Scoped ){}
-export class RaEeCertInfoSpdu extends Ieee1609Dot2Data_Unsecured (ScmsPdu_Scoped){}
-export class RaEeCertAndAcpcInfoSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu_Scoped){}
-export class EeRaDownloadRequestPlainSpdu extends Ieee1609Dot2Data_Unsecured (ScmsPdu_Scoped){}
-export class EeRaDownloadRequestSpdu extends Ieee1609Dot2Data_SignedEncrypted (ScmsPdu_Scoped) {}
-export class EeRaSuccessorEnrollmentCertRequestSpdu extends Ieee1609Dot2Data_SignedEncryptedCertRequest (ScmsPdu_Scoped) {}
-export class RaEeEnrollmentCertAckSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu_Scoped) {}
-export class EeRaEncryptedSignedMisbehaviorReportSpdu extends Ieee1609Dot2Data_EncryptedSigned (ScmsPdu_Scoped) {}
+export class EeRa1609Dot2AuthenticatedCertRequestSpdu extends Ieee1609Dot2Data_SignedEncryptedCertRequest ( ScmsPdu ){}
+export class EeRaX509AuthenticatedCertRequestSpdu extends Ieee1609Dot2Data_Encrypted (ScmsPdu ){}
+export class RaEeCertAckSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu ){}
+export class RaEeCertInfoSpdu extends Ieee1609Dot2Data_Unsecured (ScmsPdu){}
+export class RaEeCertAndAcpcInfoSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu){}
+export class EeRaDownloadRequestPlainSpdu extends Ieee1609Dot2Data_Unsecured (ScmsPdu){}
+export class EeRaDownloadRequestSpdu extends Ieee1609Dot2Data_SignedEncrypted (ScmsPdu) {}
+export class EeRaSuccessorEnrollmentCertRequestSpdu extends Ieee1609Dot2Data_SignedEncryptedCertRequest (ScmsPdu) {}
+export class RaEeEnrollmentCertAckSpdu extends Ieee1609Dot2Data_Signed (ScmsPdu) {}
+export class EeRaEncryptedSignedMisbehaviorReportSpdu extends Ieee1609Dot2Data_EncryptedSigned (ScmsPdu) {}
 export class EeRaEncryptedMisbehaviorReportSpdu extends Ieee1609Dot2Data {}
+
+AcaResponse.fields[0].type = AcaEeCertResponsePlainSpdu;
+AcaResponse.fields[1].type = AcaEeCertResponsePrivateSpdu;
+AcaResponse.fields[2].type = AcaEeCertResponseCubkSpdu;
+
+MultiSignedCtl.fields[3].type = SequenceOf(CtlSignatureSpdu);
+
+CompositeCrl.fields[1].type = MultiSignedCtlSpdu;
+CertificateChain.fields[0].type = MultiSignedCtlSpdu;
+EeRaInterfacePdu.fields[4].type = EeEcaCertRequestSpdu;
 
 class BaseSsp extends Sequence ([
     { name:"version", type: Uint8},

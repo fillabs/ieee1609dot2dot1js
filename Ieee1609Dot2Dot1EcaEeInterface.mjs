@@ -7,8 +7,8 @@
  * abbreviations used in this file are specified in 3.2.
  */
 
-import { Uint8, Choice, Sequence, IA5String, OctetString } from "asnjs";
-import {Certificate, CertificateType, HashedId8, Time32, ToBeSignedCertificate} from "Ieee1609Dot2js"
+import { Uint8, Choice, Sequence, IA5String, OctetString, SequenceOf } from "asnjs";
+import {CertificateType, HashedId8, Time32, ToBeSignedCertificate, Ieee1609Dot2Certificate} from "Ieee1609Dot2js"
 
 /**
  * @class EeEcaCertRequest
@@ -53,7 +53,7 @@ import {Certificate, CertificateType, HashedId8, Time32, ToBeSignedCertificate} 
  * the canonicalId to look up the canonical public key to verify the
  * certificate request.
  */
-class EeEcaCertRequest extends Sequence([
+export class EeEcaCertRequest extends Sequence([
     {name:"version"         ,type:Uint8},
     {name:"generationTime"  ,type:Time32},
     {name:"type"            ,type:CertificateType},
@@ -101,11 +101,11 @@ class EeEcaCertRequest extends Sequence([
  * certificate.type is implicit. This is used by the EE as specified in
  * 9.3.5.1.
  */
-  class EcaEeCertResponse extends Sequence([
+  export class EcaEeCertResponse extends Sequence([
     {name:"version"         ,type:Uint8},
     {name:"requestHash"     ,type:HashedId8},
-    {name:"ecaCertChain"    ,type:SequenceOf(Certificate)},
-    {name:"certificate"     ,type:Certificate},
+    {name:"ecaCertChain"    ,type:SequenceOf(Ieee1609Dot2Certificate)},
+    {name:"certificate"     ,type:Ieee1609Dot2Certificate},
     {name:"privateKeyInfo"  ,type:OctetString(32), optional:true},
     {extension:true}
   ]){}

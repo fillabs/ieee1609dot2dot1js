@@ -1,5 +1,5 @@
-import { OctetString, OpenType, SequenceOf, Uint8, Sequence, Integer } from "asnjs"
-import { HashedId8, Time32, Certificate, Psid } from "Ieee1609Dot2js"
+import { OctetString, OpenType, SequenceOf, Uint8, Uint16, Sequence, Integer, Null, Choice } from "asnjs"
+import { HashedId8, Time32, Ieee1609Dot2Certificate, Psid, CrlSeries } from "Ieee1609Dot2js"
 import { CtlSignatureSpdu, MultiSignedCtlSpdu } from "./Ieee1609Dot2Dot1Protocol.mjs"
 import { SecuredCrl } from "./Ieee1609Dot2Crl.mjs"
 
@@ -34,7 +34,7 @@ import { SecuredCrl } from "./Ieee1609Dot2Crl.mjs"
  */
  export class CompositeCrl extends Sequence([
   {name:"crl"      , type:SequenceOf(SecuredCrl)},
-  {name:"homeCtl"  , type:MultiSignedCtlSpdu},
+  {name:"homeCtl"  , type:Null}, // to be updated to MultiSignedCtlSpdu,
   {extension:true}
 ]){}
 
@@ -54,8 +54,8 @@ import { SecuredCrl } from "./Ieee1609Dot2Crl.mjs"
  * MAs chosen by means outside the scope of this document.
  */
  export class CertificateChain extends Sequence([
-  {name:"homeCtl" ,type:MultiSignedCtlSpdu},
-  {name:"others"  ,type:SequenceOf(Certificate)},
+  {name:"homeCtl" ,type:Null}, // to be updated to MultiSignedCtlSpdu},
+  {name:"others"  ,type:SequenceOf(Ieee1609Dot2Certificate)},
   {extension:true}
 ]){}
 
@@ -76,7 +76,7 @@ import { SecuredCrl } from "./Ieee1609Dot2Crl.mjs"
   * document does not specify semantics of this type once it reaches its
   * maximum value.
   */
- export class  CtlSequenceNumber extends UInt16 {}
+ export class  CtlSequenceNumber extends Uint16 {}
  
  /**
   * @class CtlElectorEntry
@@ -213,8 +213,8 @@ import { SecuredCrl } from "./Ieee1609Dot2Crl.mjs"
     {name:"tbsCtl", type:OpenType([
       {name:"fullCtl", type: FullIeeeTbsCtl}
     ], "type")},
-    {name:"unsigned", type:SequenceOf(Certificate)},
-    {name:"signatures", type:SequenceOf(CtlSignatureSpdu)}
+    {name:"unsigned", type:SequenceOf(Ieee1609Dot2Certificate)},
+    {name:"signatures", type:Null} // to be updated to SequenceOf(CtlSignatureSpdu)}
   ]){}
 
 /**

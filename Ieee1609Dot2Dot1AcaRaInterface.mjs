@@ -30,8 +30,8 @@ WITH SUCCESSORS
 ;
 */
 
-import { Uint8, Choice, Sequence, BitString, OctetString } from "asnjs"
-import {Time32, Certificate} from "Ieee1609Dot2js"
+import { Uint8, Choice, Sequence, BitString, OctetString, Null } from "asnjs"
+import {Time32, LaId, CertificateType, ToBeSignedCertificate, PublicEncryptionKey, HashedId8} from "Ieee1609Dot2js"
 import {Ieee1609Dot2Data_Encrypted} from "./Ieee1609Dot2Extension.mjs"
 
 /** 
@@ -214,10 +214,10 @@ import {Ieee1609Dot2Data_Encrypted} from "./Ieee1609Dot2Extension.mjs"
  * choice is used only when the field certEncKey is absent and flags.cubk is
  * set in the corresponding RaAcaCertRequest.
  */
- export class AcaResponse extends Choice([
-  {name:"plain"    ,type:AcaEeCertResponsePlainSpdu},
-  {name:"private"  ,type:AcaEeCertResponsePrivateSpdu},
-  {name:"cubk"     ,type:AcaEeCertResponseCubkSpdu},
+export class AcaResponse extends Choice([
+  {name:"plain"    ,type:Null }, // to be updated to AcaEeCertResponsePlainSpdu
+  {name:"private"  ,type:Null }, // to be updated to AcaEeCertResponsePrivateSpdu
+  {name:"cubk"     ,type:Null }, // to be updated to AcaEeCertResponseCubkSpdu
   {extension:true}
 ]){}
 
